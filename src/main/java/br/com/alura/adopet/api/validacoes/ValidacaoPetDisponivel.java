@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component //Para o Spring poder utilizar uma classe de validação de dados, pode-se usar a anotação @Component (poderia ser @Service também, já que são parecidos)
-public class ValidacaoPetDisponivel {
+public class ValidacaoPetDisponivel implements ValidacaoSolicitacaoAdocao {
 
     @Autowired
     private PetRepository petRepository;
