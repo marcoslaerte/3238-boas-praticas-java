@@ -48,12 +48,7 @@ public class AdocaoService {
         // Chamando as validações de forma sequencial
         validacoes.forEach(v -> v.validar(dto));
 
-        Adocao adocao = new Adocao();
-        adocao.setData(LocalDateTime.now());
-        adocao.setStatus(StatusAdocao.AGUARDANDO_AVALIACAO);
-        adocao.setPet(pet);
-        adocao.setTutor(tutor);
-        adocao.setMotivo(dto.motivo());
+        Adocao adocao = new Adocao(tutor, pet, dto.motivo());
 
         repository.save(adocao);
 
@@ -66,7 +61,7 @@ public class AdocaoService {
 
     public void aprovar(AprovacaoAdocaoDto dto) {
         Adocao adocao = repository.getReferenceById(dto.idAdocao());
-        adocao.setStatus(StatusAdocao.APROVADO);
+        adocao.marcarComoAprovada();
      /* Após carregar o objeto do BD e fizermos alguma alteração nele, a JPA dispara automaticamente um update
         no registro dele. Então, não precisamos efetuar o repository.save(adocao);
       */
@@ -81,8 +76,7 @@ public class AdocaoService {
 
     public void reprovar(ReprovacaoAdocaoDto dto) {
         Adocao adocao = repository.getReferenceById(dto.idAdocao());
-        adocao.setStatus(StatusAdocao.REPROVADO);
-        adocao.setJustificativaStatus(dto.justificativa());
+        adocao.marcarComoReprovada(dto.justificativa());
         // repository.save(adocao); // Não é necessário repository.save(adocao); pois o objeto carregado do banco de dados será salvo automaticamente pela JPA.
 
         emailService.enviarEmail(
